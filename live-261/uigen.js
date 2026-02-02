@@ -9671,7 +9671,7 @@ var BodyLocker = (function() {
     };
     if (!isBodyLocked()) console.log("BodyLocker - set lock");
     applyStyles(fixBodyPosition, false);
-    scheduleRetries(function() { applyStyles(fixBodyPosition, true); }, 10, 500);
+    scheduleRetries(function() { applyStyles(fixBodyPosition, true); }, 20, 500);
   }
 
   /** Unlock scroll: cancel retries, restore styles từ backup */
