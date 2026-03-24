@@ -1,0 +1,2616 @@
+/****** Conflict fixing. BEG ********/
+.naviItem .icon:not(.ignore):before {
+    left: initial;
+    transform: initial;
+}
+
+.naviItem .icon {
+    position: initial;
+    vertical-align: initial;
+}
+
+#admin-bar-iframe {
+    display: none; /* test only */
+}
+
+/****** Conflict fixing. END ********/
+:root {
+    --is-navi-css-loaded: 1;
+}
+
+.naviItem {
+    z-index: 50;
+    position: fixed;
+    background: #fff;
+    display: initial;
+    /*box-shadow: 0px -1px 8px 0px rgba(0, 0, 0, 0.15);*/
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.15);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    /* Optimize font on Safari */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+
+    /* Loại bỏ tap highlight mặc định của browser trên mobile */
+    -webkit-tap-highlight-color: transparent;
+
+    /* Tránh bôi đen text khi click/drag trên menu */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.naviItem *:empty {
+  display: initial;
+}
+
+.naviItem .scroll-mobile {
+    overflow-x: auto;
+    /* -webkit-overflow-scrolling: touch; */ /* Cái này gây lỗi trên mobile browser thật */
+}
+
+/* Desktop: tắt scroll ngang cho Mega menu (hỗ trợ resize). Grid giữ nguyên logic gốc. */
+@media screen and (min-width: 769px) {
+    .naviItem.STICKY_TABBAR .scroll-mobile,
+    .naviItem.STICKY_FAB_SUPPORT .scroll-mobile,
+    .naviItem.SECTION_MOBILE_MEGAMENU .scroll-mobile {
+        overflow-x: visible;
+    }
+    .naviItem.STICKY_TABBAR .scroll-mobile ul.navigation,
+    .naviItem.STICKY_FAB_SUPPORT .scroll-mobile ul.navigation,
+    .naviItem.SECTION_MOBILE_MEGAMENU .scroll-mobile ul.navigation {
+        width: auto !important;
+    }
+}
+
+/********** Fix lỗi font trên Safari (ko set trước sẽ bị lỗi nhoè) **********/
+.naviItem, .naviItem .name, .naviItem .description, .naviItem .icon i, .naviItem .is-parent::after {
+    font-weight: 400;
+}
+
+.naviman_layout1, .naviman_layout2 {
+    width: 100%;
+    bottom: 0px;
+    left: 0px;
+}
+
+.naviman_layout3 {
+    bottom: 24px;
+    width: calc( 100% - 32px );
+    left: 16px;
+    border-radius: 32px;
+}
+
+/********** parent **********/
+.naviItem  ul.navigation {
+    position: relative;
+    padding: 0px;
+    margin: 0px;
+    z-index: 50;
+    display: none;
+}
+
+/*******************************************************
+Kiểm tra và giữ lại chỉ một phần tử navigation trong mỗi naviItem
+*******************************************************/  
+.naviItem  ul.navigation:first-of-type {
+  display: block;
+}
+
+.naviItem  ul li {
+    color: #555;
+    line-height: initial;
+    /*border-right: solid 1px #eee;*/
+    height: 100%;
+}
+
+.naviman_app_overlay {
+    background: rgba(0, 0, 0, 0.2);
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0px;
+    top: 0px;
+    /*
+    width: 100vw;
+    height: 100vh; */
+    height: 100%;
+    width: 100%;
+    content: " ";
+}
+@media only screen and (min-width: 769px) {
+    .naviman_app_overlay {
+        background: rgba(0, 0, 0, 0.0); /* Trên desktop thì không có bóng */
+    }
+}
+
+body:has(.naviman_app_overlay_global.is-open) {
+    overflow: hidden !important;
+}
+
+html:has(.naviman_app_overlay_global.is-open) {
+    overflow: hidden !important;
+}
+
+.naviman_app_overlay_global {
+    background: rgba(0, 0, 0, 0.2);
+    display: none;
+    position: fixed;
+    z-index: 9999999;
+    left: 0px;
+    top: 0px;
+    /*
+    width: 100vw;
+    height: 100vh; */
+    height: 100%;
+    width: 100%;
+    content: " ";
+}
+
+.naviman_app_overlay_global.is-open {
+    display: block;
+}
+
+.naviman_app_overlay:hover,
+.naviman_app_overlay_global:hover {
+    cursor: pointer;
+}
+
+/* TODO: Remove sticky */
+.section_naviman_app {
+    display: block;
+    position: relative;
+    width: 100%;
+}
+
+.section_naviman_app .naviItem {
+    position: initial;
+    width: 100%;
+    display: grid;
+}
+
+.section_naviman_app .naviItem ul.navigation {
+    z-index: 100;
+    width: 100%;
+}
+
+.section_naviman_app .naviItem ul li.item ul.children {
+    z-index: 100;
+    top: initial;
+}
+
+/****** Animation Ripple ********/
+.naviItem ul li.item, .naviItem ul li.child{
+    background-position: center;
+    transition: background 0.8s;
+    margin: 0px;
+
+    overflow: initial;
+    position: initial;
+    backface-visibility: initial;
+    vertical-align: top;
+}
+
+@media screen and (min-width:769px) {
+    .naviItem ul li.item:hover:not(.kind-group-title), .naviItem ul li.child:hover:not(.kind-group-title) {
+        background: rgba(128, 128, 128, 0.03) radial-gradient(circle, transparent 0%, rgba(128, 128, 128, 0.03) 0%) center/15000%;
+    }
+
+    /*.section_naviman_app .naviItem ul > li.item ul.children {
+        width: 400px;
+    }*/
+
+    .section_naviman_app .naviItem ul > li.item {
+        position: relative;
+    }
+
+    /* Fix for full desktop stick mobile ****/
+    .naviItem.desktop-bottom-full.STICKY_TABBAR ul li ul.children {
+        left: initial;
+    }
+
+    .naviItem.desktop-bottom-full.STICKY_TABBAR > ul.navigation {
+        max-width: 1280px;
+        margin: auto;
+    }
+
+    .naviItem.desktop-top-full {
+        top: 0px;
+        bottom: initial;
+    }
+
+    .naviItem.desktop-top-full ul li ul.children {
+        bottom: initial;
+    }
+
+    .naviItem.desktop-top-full.STICKY_TABBAR ul li ul.children {
+        left: initial;
+    }
+
+    .naviItem.desktop-top-full.STICKY_TABBAR > ul.navigation {
+        max-width: 1280px;
+        margin: auto;
+    }
+
+    .naviItem .horizontal-menu ul.children {
+        width: 960px;
+    }
+
+    .naviItem .horizontal-menu .kind-group-title {
+        padding-top: 24px;
+        border-top: solid 1px #eee;
+    }
+    .naviItem .horizontal-menu .kind-group-title:hover {
+        background: initial;
+    }
+
+    .naviItem .horizontal-menu .kind-group-title:first-child {
+        padding-top: 8px;
+        border-top: 0px;
+    }
+}
+
+/* Fade nhanh khi nhả tap để tránh giữ trạng thái xám mãi */
+.naviItem ul li.item, .naviItem ul li.child {
+    transition: background-color 0.15s ease-out;
+}
+.naviItem ul li.item:active:not(.kind-group-title), .naviItem ul li.child:active:not(.kind-group-title) {
+    background-color: rgba(128, 128, 128, 0.06);
+    background-size: 100%;
+    transition: background 0s; /* Show ngay khi nhấn */
+}
+/****** Animation Ripple ********/
+
+.naviItem ul li.item {
+    align-items: center;
+    /*display: inline-grid; /* khoipn: ko biết ăn ko */
+    display: block;
+    text-align: center;
+    width: 20%;
+    float: left;
+    height: 50px;
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+}
+
+.naviItem ul li:last-child {
+    border-right: 0px;
+}
+
+.naviItem ul li.item a {
+    text-decoration: none;
+}
+
+.naviItem ul li.item .icon {
+    display: block;
+    height: fit-content;
+    margin-bottom: -2px; /* Fit height thì quá xa, cần chỉnh lại 1 chút */
+    width: 100%;
+    line-height: initial;
+    opacity: initial;
+}
+
+.naviItem ul .kind-blank-space .inner .icon,
+.naviItem ul .kind-blank-space .inner .image,
+.naviItem ul .kind-blank-space .inner .info {
+    visibility: hidden;
+}
+
+.naviItem ul .kind-blank-space {
+    padding: 0px;
+    display: block;
+}
+
+.naviItem ul > li.item .icon i {
+    font-size: 22px;
+}
+
+.naviItem ul > li.item > .inner .image-border {
+    width: 100%;
+    text-align: center;
+    line-height: 0px;
+}
+
+.naviItem ul > li.item > .inner .image-border .image-box {
+    display: inline-block;
+    width: fit-content;
+    line-height: 0px;
+    height: fit-content;
+}
+
+.naviItem ul li.item .image-border .image-box .image,
+.naviItem ul li.item ul li.child .image-border .image-box .image {
+    height: fit-content;
+    display: block;
+}
+
+.naviItem ul li.item .image {
+    display: block;
+    height: fit-content;
+    margin-bottom: 0px; /* Fit height thì quá xa, cần chỉnh lại 1 chút */
+    width: 100%;
+    line-height: 0px;
+}
+
+.naviItem ul li.item .image img{
+    height: 22px;
+    width: initial;
+    padding: initial;
+    margin: initial;
+}
+
+.naviItem ul li.item > .inner .name {
+    line-height: initial;
+    letter-spacing: initial;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.naviItem ul > li.item .description {
+    font-size: 70%;
+    opacity: 0.6;
+    margin-top: 0px;
+    line-height: initial;
+}
+
+.naviItem ul > li.item > .inner .description {
+    display: none;
+}
+
+.naviItem ul > li.item.text-only  > .inner .description {
+    display: block;
+}
+
+.naviItem ul li.item .inner {
+    position: relative;
+    padding: 0px;
+    margin: 0px;
+    display: inline-block;
+
+    /* width: 100%; KHOIPN */
+    height: 100%;
+    /*padding: 0px 8px 0px 8px;*/
+    justify-content: center;
+
+    flex-direction: column;
+    display: flex;
+    gap: 3px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.naviItem ul li.item:before {
+    display: none;
+}
+
+.naviItem ul > li.item > .inner {
+    z-index: 2;
+}
+
+.naviItem ul li.item .arrow {
+    position: absolute;
+    top: -8px;
+    left: calc( 50% - 6px );
+    background: #fff;
+    border: solid 1px #eee;
+    border-left: 0px;
+    border-top: 0px;
+    width: 12px;
+    transform: rotate(45deg);
+    height: 12px;
+    display: none;
+    visibility: hidden;
+}
+
+.naviItem ul li.item_primary {
+    /*position: relative;*/
+}
+
+
+/*.naviItem ul li ul.children li.navi-active {
+    position: initial;
+}
+
+.naviItem ul li ul.children li.navi-active::after {
+    content: " ";
+    border-left: solid 2px rgba(128, 128, 128, 0.2);
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+.naviItem ul li.navi-active {
+    position: relative;
+}
+
+.naviItem ul li.navi-active::after {
+    content: " ";
+    border-top: solid 2px rgba(128, 128, 128, 0.5);
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}*/
+
+.naviItem ul li.navi-active {
+    background: rgba(128, 128, 128, 0.05);
+}
+
+.naviItem ul li ul li.navi-active {
+    background: rgba(128, 128, 128, 0.05);
+}
+
+
+.naviItem ul li.item_divider {
+    border-right: solid 1px #d9d9d9;
+    margin-right: -1px;
+}
+
+.naviItem ul li.item_primary > .inner {
+    width: 58px;
+    /*position: absolute;*/
+    margin-top: -6px;
+    height: 58px;
+    border-radius: 58px;
+    background: #517B2C;
+    filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.10));
+    /*box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.15);*/
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.10);
+    left: calc(100% - 58px - 13px);
+    padding-top: 13px;
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+.naviItem ul li.item_primary > .inner .icon i {
+    color: #fff;
+}
+
+.naviItem ul li.item_primary > .inner .name {
+    display: none !important;
+}
+
+.naviItem ul li.item_primary > .inner .arrow {
+    /*top: -2px;*/
+    visibility: hidden;
+}
+
+.naviItem ul li.item_primary > .inner i {
+    font-size:28px !important;
+    margin-top:-2px !important;
+    display: inline-block;
+}
+
+.naviItem ul li.item_primary > .inner img {
+    height: 30px !important;
+    margin-top:-2px !important;
+    display: inline-block;
+}
+
+.naviItem ul li {
+    display: block;
+    transition-duration: 0.5s;
+
+}
+
+.naviItem ul li:hover {
+    cursor: pointer;
+}
+
+/********** child **********/
+.naviItem ul li ul.children {
+    /*visibility: hidden;
+    opacity: 0;*/
+    position: absolute;
+    /* transition: all 0.5s ease; */
+    left: 0px;
+    /*bottom: 1px;*/
+    bottom: 0px;
+    display: none;
+    background: #fff;
+    width: 100%;
+    z-index: 3;
+    padding-left: 0px;
+    box-shadow: 0px -4px 8px 0px rgba(0, 0, 0, 0.10);
+    border-bottom: solid 1px rgba(0,0,0,0.05);
+    padding: 4px 0px;
+
+    max-height: 560px;
+    overflow: auto;
+}
+
+@media screen and (min-width:769px) {
+    .naviItem.STICKY_TABBAR ul li ul.children li ul.children {
+        position: fixed; 
+    }
+
+    .naviItem.STICKY_TABBAR ul li ul.children {
+        right: -100%;
+    }
+}
+
+.naviItem ul li ul.children li.child .image {
+    display: inline;
+}
+
+.naviItem ul li ul.children li ul.children {
+    position: absolute;
+    left: 48px;
+    top: 0px;
+    width: calc(100% - 48px);
+    z-index: 2;
+}
+
+.naviItem ul li ul.children .overlay {
+    width: 100%;
+    display: block;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.1);
+    left: 0px;
+    top: 0px;
+    
+}
+
+.naviItem ul li ul.children .overlay b.close {
+    position: absolute;
+    top: 5px;
+    left: 4px;
+    background: #fff;
+    padding: 10px 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+    /*.naviItem ul li.item:hover > ul,
+    .naviItem ul li.item ul:hover {
+        visibility: visible;
+        opacity: 1;
+        display: block;
+    }*/
+
+.naviItem ul li.child_divider {
+    border-bottom: solid 1px #eee;
+    /* Jun 21: Delete to fix lost divider */
+    /* margin-bottom: -1px;  */
+}
+
+/* Divider width variants — dùng ::after để kiểm soát chiều rộng đường divider */
+/* Bottom dividers (child_divider, level 2+) */
+.naviItem ul li.child_divider.divider-w-inset,
+.naviItem ul li.child_divider.divider-w-80,
+.naviItem ul li.child_divider.divider-w-60,
+.naviItem ul li.child_divider.divider-w-40 {
+    border-bottom: none;
+    position: relative;
+}
+.naviItem ul li.child_divider.divider-w-inset::after,
+.naviItem ul li.child_divider.divider-w-80::after,
+.naviItem ul li.child_divider.divider-w-60::after,
+.naviItem ul li.child_divider.divider-w-40::after {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: 0;
+    border-bottom: var(--nd-size, 1px) var(--nd-style, solid) var(--nd-color, #eee);
+}
+.naviItem ul li.child_divider.divider-w-inset::after { left: 16px; right: 16px; }
+.naviItem ul li.child_divider.divider-w-80::after    { left: 10%; right: 10%; }
+.naviItem ul li.child_divider.divider-w-60::after    { left: 20%; right: 20%; }
+.naviItem ul li.child_divider.divider-w-40::after    { left: 30%; right: 30%; }
+
+/* Right dividers (item_divider, level 1 horizontal) */
+.naviItem ul li.item_divider.divider-w-inset,
+.naviItem ul li.item_divider.divider-w-80,
+.naviItem ul li.item_divider.divider-w-60,
+.naviItem ul li.item_divider.divider-w-40 {
+    border-right: none;
+    position: relative;
+}
+.naviItem ul li.item_divider.divider-w-inset::after,
+.naviItem ul li.item_divider.divider-w-80::after,
+.naviItem ul li.item_divider.divider-w-60::after,
+.naviItem ul li.item_divider.divider-w-40::after {
+    content: '';
+    display: block;
+    position: absolute;
+    right: 0;
+    border-right: var(--nd-size, 1px) var(--nd-style, solid) var(--nd-color, #d9d9d9);
+}
+.naviItem ul li.item_divider.divider-w-inset::after { top: 8px; bottom: 8px; }
+.naviItem ul li.item_divider.divider-w-80::after    { top: 10%; bottom: 10%; }
+.naviItem ul li.item_divider.divider-w-60::after    { top: 20%; bottom: 20%; }
+.naviItem ul li.item_divider.divider-w-40::after    { top: 30%; bottom: 30%; }
+
+
+.naviItem ul li ul li {
+    clear: both;
+    width: -webkit-fill-available;
+    width: -moz-available;          /* WebKit-based browsers will ignore this. */
+    width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
+    width: fill-available;
+
+    border: 0px;
+    text-align: left;
+    height: initial;
+    padding: 8px 16px 8px 16px;
+    /*display: inline-flex;*/
+    display: -webkit-inline-box;
+    /*border-bottom: solid 1px #eee;*/
+}
+
+/* To Safari ****/
+@supports (-webkit-appearance: none) {
+    .naviItem ul li ul li {
+        display: inline-flex;
+    }
+
+    .naviItem ul li.item ul li.child .icon {
+        width: fit-content;
+    }
+
+    .naviItem ul li ul.children.fullExpand li.child_column .children.fullExpandChildrent {
+        width: 100%;
+    }
+}
+
+.naviItem ul li ul:last-child {
+    /*border-bottom: 0px;*/
+
+}
+
+.naviItem ul li.item ul li.child .info {
+    /*display: inline-grid;*/
+    display: block;
+    margin-left: 12px;
+    width: calc( 100% - 24px );
+}
+
+.naviItem ul li.item ul li.child .name {
+    display: inline;
+    font-size: 14px;
+}
+
+.naviItem ul li.item ul li.child .icon {
+    display: inline;
+    /*width: 28px;*/
+}
+
+.naviItem ul li.item ul li.child .icon i {
+    font-size: 20px;
+}
+
+.naviItem ul li.item ul li.child .image {
+    /*width: 28px;*/
+}
+
+.naviItem ul li.item ul li.child .name {
+    display: inline-block;
+}
+
+.naviItem ul li.item ul li.child .description {
+    font-size: 70%;
+    opacity: 0.6;
+    margin-top: 0px;
+    line-height: initial;
+    padding-top: 3px;
+}
+
+
+
+.naviItem ul li ul.children {
+    margin: 0px;
+}
+
+span.telsms-click-spaces {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    opacity: 0;
+}
+
+/* Publish: hide/hide when logged-in/only show when logged-in ********/
+.naviItem ul li.publish-show-logined{
+    display: none;
+}
+
+.naviItem ul li.publish-hide{
+    display: none;
+}
+
+.naviItem ul li.item .divider-level4-top {
+    border-bottom: dashed 1px rgba(128, 128, 128, 0.2);
+    padding: 2px 16px;
+    height: 4px;
+}
+
+.naviItem ul li.item .divider-level4-bottom {
+    border-bottom: solid 4px rgba(128, 128, 128, 0.2);
+    padding: 2px 16px;
+    height: 4px;
+}
+
+.naviItem ul.children[menulevel="3"] li:empty {
+    display: none;
+}
+
+.naviItem ul.children[menulevel="3"] li.is-parent::after {
+    display: none;
+}
+
+/*******************************************************************/
+/*                           LEVEL 1                               */
+/*******************************************************************/
+
+/* Display layout ********/
+.naviItem ul li.left-right > .inner, .naviItem ul li.right-left > .inner {
+    display: inline-flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 4px;
+    padding-top: 0px;
+}
+
+.naviItem ul > li.right-left > .inner {
+    flex-direction: row-reverse;
+}
+
+.naviItem ul > li.left-right .icon, .naviItem ul > li.left-right .image,
+.naviItem ul > li.right-left .icon, .naviItem ul > li.right-left .image
+{
+    width: initial;
+}
+
+.naviItem ul > li.down-top .inner {
+    flex-direction: column-reverse;
+    height: initial;
+}
+
+/* Icon/image only ********/
+
+.naviItem ul > li.icon-image-only > .inner .info {
+    display: none  !important;
+}
+
+.naviItem ul > li.icon-image-only > .inner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-top: 0px;
+}
+
+.naviItem ul > li.icon-image-only > .inner .icon, .naviItem ul > li.icon-image-only > .inner .image {
+    flex-direction: column;
+    display: flex;
+    align-items: initial;
+    height: initial;
+}
+
+.naviItem ul > li.align-right.icon-image-only > .inner .icon, .naviItem ul > li.align-right.icon-image-only > .inner .icon {
+    align-items: initial !important;
+}
+
+/* Text only ********/
+.naviItem ul > li.text-only > .inner .icon, .naviItem ul > li.text-only > .inner .image {
+    display: none !important;
+}
+
+.naviItem ul li.text-only > .inner {
+    display: flex !important;
+    flex-direction: row;
+    align-items: center;
+    padding-top: 0px;
+
+    gap: 0px !important;
+    justify-content: flex-start;
+}
+
+.naviItem ul li.item ul li.text-only .info {
+    margin-left: initial;
+}
+
+.naviItem ul li.align-left > .inner
+{
+    justify-content: left;
+}
+
+.naviItem ul li.align-right > .inner
+{
+    justify-content: right;
+}
+
+.naviItem ul li.align-center > .inner
+{
+    justify-content: center;
+}
+
+
+/* Empty ********/
+.naviItem ul > li.empty .icon, .naviItem ul > li.empty .image, .naviItem ul > li.empty .name, .naviItem ul > li.empty .description {
+    display: none;
+}
+
+/* BIG_IMAGE_TEXT ************/
+.naviItem ul > li.kind-big-image-text .image img {
+    border-radius: 4px;
+}
+
+/*** Nếu left-right hoặc righ-left ****/
+.naviItem ul > .kind-big-image-text.left-right .image, .naviItem ul > .kind-big-image-text.right-left .image {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.naviItem ul > .kind-big-image-text.left-right .inner, .naviItem ul > .kind-big-image-text.right-left .inner {
+    gap: 8px;
+}
+
+.naviItem ul > .kind-big-image-text.left-right .info, .naviItem ul > .kind-big-image-text.right-left .info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+}
+
+.naviItem ul > .kind-big-image-text.top-down .info, .naviItem ul > .kind-big-image-text.down-top .info {
+    padding-bottom: 4px;
+}
+
+.naviItem ul li.text-only ul li.kind-big-image-text.top-down .inner
+{
+    flex-direction: column;
+}
+
+.naviItem ul li.text-only ul li.kind-big-image-text.down-top .inner {
+    flex-direction: column-reverse;
+}
+
+/* Fix: Nếu vừa là dạng trái phải, vùa là big image thì luôn luôn căn text sang trái */
+.naviItem ul > .kind-big-image-text.left-right .inner {
+    text-align: left;
+}
+
+/* GROUP_TITLE ************/
+
+.naviItem ul > li.kind-group-title .image, .naviItem ul > li.kind-group-title .icon {
+    display: none;
+}
+
+.naviItem ul li.item ul li.kind-group-title.navi-active {
+    /* TODO: Overwrite ông background cũ mất rồi */
+}
+
+.naviItem ul li.kind-group-title:not(.has-url):hover,
+.naviItem ul li.kind-group-title:not(.has-url) a:hover
+{
+    cursor: initial !important;
+}
+
+/*******************************************************************/
+/*                           LEVEL 2                               */
+/*******************************************************************/
+
+.naviItem ul li.item ul .widthfix {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/* Display layout ********/
+.naviItem ul li.item ul  li.left-right .inner, .naviItem ul li.item ul  li.right-left .inner {
+    display: inline-flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 4px;
+    padding-top: 0px;
+}
+
+.naviItem ul li.item ul  li.right-left .inner {
+    flex-direction: row-reverse;
+}
+
+.naviItem ul li.item ul  li.left-right .icon, .naviItem ul li.item ul  li.left-right .image,
+.naviItem ul li.item ul  li.right-left .icon, .naviItem ul li.item ul  li.right-left .image
+{
+    width: initial;
+}
+
+.naviItem ul li.item ul  li.down-top .inner {
+    flex-direction: column-reverse;
+    height: initial;
+}
+
+/* Icon/image only ********/
+.naviItem ul li.item ul  li.icon-image-only .name, .naviItem ul li.item ul  li.icon-image-only .description {
+    display: none;
+}
+
+.naviItem ul li.item ul  li.icon-image-only .inner {
+    display: flex;
+}
+
+.naviItem ul li.item ul  li.icon-image-only .inner .icon, .naviItem ul li.item ul  li.icon-image-only .inner .image {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    height: initial;
+}
+
+/* Text only ********/
+.naviItem ul li.item ul  li.text-only > .icon, .naviItem ul li.item ul  li.text-only > .image-border
+{
+    display: none;
+}
+
+.naviItem ul li.item ul  li.text-only > .info {
+    margin-left: 0px;
+    width: 100%;
+}
+
+.naviItem ul li.item ul  li.text-only > .inner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-top: 0px;
+}
+
+
+/* Empty ********/
+.naviItem ul li.item ul  li.empty .icon, .naviItem ul li.item ul  li.empty .image, .naviItem ul li.item ul  li.empty .name, .naviItem ul li.item ul  li.empty .description {
+    display: none;
+}
+
+/* BIG_IMAGE_TEXT ************/
+.naviItem ul li.item ul .left-right.kind-big-image-text .image img,
+.naviItem ul li.item ul .right-left.kind-big-image-text .image img
+{
+    border-radius: 4px;
+    height: initial !important;
+    width: 80px;
+}
+
+.naviItem ul li.item ul .kind-big-image-text.left-right .inner, .naviItem ul li.item ul .kind-big-image-text.right-left .inner {
+    align-items: flex-start;
+    gap: 0px;
+}
+
+/*** Nếu left-right hoặc righ-left ****/
+.naviItem ul li.item ul  .kind-big-image-text.left-right .image, .naviItem ul li.item ul  .kind-big-image-text.right-left .image {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+/*
+.naviItem ul li.item ul  .kind-big-image-text.left-right .inner, .naviItem ul li.item ul  .kind-big-image-text.right-left .inner {
+    gap: 8px;
+}
+*/
+
+.naviItem ul li.item ul  .kind-big-image-text .inner {
+    gap: 4px;
+}
+
+.naviItem ul li.item ul .kind-big-image-text.left-right .info, .naviItem ul li.item ul  .kind-big-image-text.right-left .info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+    width: calc( 100% - 80px - 12px );
+}
+
+.naviItem ul li.item ul .kind-big-image-text.left-right .inner, .naviItem ul li.item ul  .kind-big-image-text.right-left .inner {
+    gap: 8px;
+}
+
+/* Fix: Nếu vừa là dạng trái phải, vùa là big image thì luôn luôn căn text sang trái */
+.naviItem ul li.item ul  .kind-big-image-text.left-right .inner {
+    text-align: left;
+}
+
+.naviItem ul li.item ul  .kind-big-image-text.left-right .info {
+    margin-left: 0px;
+    width: 100%;
+}
+
+/* Right left */
+.naviItem ul li.item ul  .kind-big-image-text.right-left {
+    display: grid;
+}
+.naviItem ul li.item ul  .kind-big-image-text.right-left .inner {
+    text-align: right;
+}
+.naviItem ul li.item ul  .kind-big-image-text.right-left .inner .info {
+    display: block;
+}
+
+/* Topdown */
+.naviItem ul li.item ul  .kind-big-image-text.top-down .image, .naviItem ul li.item ul  .kind-big-image-text.down-top .image {
+    display: block;
+    height: initial;
+}
+
+.naviItem ul li.item ul  .kind-big-image-text.top-down, .naviItem ul li.item ul  .kind-big-image-text.down-top {
+    padding: 8px 12px 4px 16px;
+}
+
+.naviItem ul li.item ul  .kind-big-image-text.top-down .image img, .naviItem ul li.item ul  .kind-big-image-text.down-top .image img{
+    width: 100%;
+    height: auto;
+}
+
+/* Image icon only */
+.naviItem ul li.item ul .kind-big-image-text.icon-image-only .image {
+    display: block;
+    height: initial;
+}
+
+.naviItem ul li.item ul .kind-big-image-text.icon-image-only {
+    /*padding: 8px 0px 4px 16px;*/
+    padding: 8px;
+}
+
+.naviItem ul li.item ul  .kind-big-image-text.icon-image-only .image {
+    width: 100%;
+}
+
+.naviItem ul li.item ul  .kind-big-image-text.icon-image-only .image img {
+    width: 100%;
+    height: auto;
+}
+
+.naviItem ul li.item ul  .kind-big-image-text.icon-image-only .inner {
+    display: block;
+}
+
+/* GROUP_TITLE ************/
+.naviItem ul li.item ul li.kind-group-title > .inner .image, .naviItem ul li.item ul li.kind-group-title > .inner .icon {
+    display: none !important;
+}
+
+.naviItem ul li.item ul li.kind-group-title > .inner {
+    /* display: block; */
+    width: 100%;
+}
+
+.naviItem ul li.item ul li.kind-group-title {
+    padding: 4px 16px 6px 16px;
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+
+.naviItem ul li.item ul li.kind-group-title > .inner .name {
+    font-size: 110%;
+}
+
+.naviItem ul li.item ul li.kind-group-title > .inner .info {
+    margin-left: 0px;
+    width: calc(100% - 12px);
+    display: contents;
+}
+
+.naviItem .image:hover
+{
+    filter: brightness(1.1) contrast(1.05); /* sáng hơn một chút */    
+}
+
+@keyframes floatUpDown {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+    100% { transform: translateY(0); }
+  }
+
+/* Hiệu ứng nhảy chữ lên trên desktop, nhưng ko hiện như vậy trên mobile */
+.naviItem .name:hover
+{
+    animation: floatUpDown 0.2s ease;
+}
+
+@media screen and (min-width:0px) and (max-width: 768px) {
+    .naviItem .name:hover {
+        animation: none;
+    }
+}
+
+.naviItem ul li.item ul li.kind-group-title > .inner .name:hover {
+    transform: initial;
+    animation: initial;
+}
+
+/*** Fixed for children ******/
+.naviItem ul li.item ul .child.top-down .info, .naviItem ul li.item ul .child.down-top .info {
+    margin-left: initial;
+    width: initial;
+}
+
+.naviItem ul li.item ul .child.top-down .image, .naviItem ul li.item ul .child.down-top .image,
+.naviItem ul li.item ul .child.top-down .icon, .naviItem ul li.item ul .child.down-top .icon
+{
+    width: 100%;
+}
+
+.naviItem ul li.item ul li.child.layout-automatic > .inner {
+    padding: 0px;
+    display: contents;
+}
+
+.naviItem ul li.item ul.children {
+    text-align: left;
+}
+
+/*** Fixed nếu ở 2 bên thì thêm 4px ở trên icon và image *****/
+@media screen and (min-width:0px) and (max-width: 768px) {
+    .naviItem.mobile-right-center li.item > .inner .icon, .naviItem.mobile-right-center li.item > .inner .image,
+    .naviItem.mobile-left-center li.item > .inner .icon, .naviItem.mobile-left-center li.item > .inner .image,
+    .naviItem.mobile-right-bottom li.item > .inner .icon, .naviItem.mobile-right-bottom li.item > .inner .image,
+    .naviItem.mobile-left-button li.item > .inner .icon, .naviItem.mobile-left-button li.item > .inner .image {
+        padding-top: 4px;
+    }
+}
+
+@media screen and (min-width:769px) {
+    .naviItem.desktop-right-top li.item > .inner .icon, .naviItem.desktop-right-top li.item > .inner .image,
+    .naviItem.desktop-left-top li.item > .inner .icon, .naviItem.desktop-left-top li.item > .inner .image,
+    .naviItem.desktop-left-full-top li.item > .inner .icon, .naviItem.desktop-left-full-top li.item > .inner .image,
+    .naviItem.desktop-left-full-center li.item > .inner .icon, .naviItem.desktop-left-full-center li.item > .inner .image,
+    .naviItem.desktop-right-full-top li.item > .inner .icon, .naviItem.desktop-right-full-top li.item > .inner .image,
+    .naviItem.desktop-right-full-center li.item > .inner .icon, .naviItem.desktop-right-full-center li.item > .inner .image {
+        padding-top: 4px;
+    }
+
+    .naviItem.naviman_layout4 li.item > .inner .icon,
+    .naviItem.naviman_layout4 li.item > .inner .image{
+        padding-top: 0px;
+    }
+
+    .naviItem.naviman_layout4 li.item > .inner .image {
+        display: flex;
+    }
+
+    .naviItem.desktop-bottom-center-float {
+        bottom: 24px;
+    }
+}
+
+
+/* Mobile platform *******/
+@media screen and (min-width:0px) and (max-width: 768px) {
+    .naviItem {
+        box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.05);
+    }
+}
+
+/* Parent menus *************************/
+.naviItem ul > li.is-parent {
+    position:relative;
+}
+/* Dropdown level 2→3: căn theo .name (--navi-dropdown-arrow-y), line-height:1 để translateY(-50%) đúng */
+.naviItem ul > li.is-parent::after {
+    content: "\ea54";
+    font-family: remixicon !important;
+    position: absolute;
+    top: var(--navi-dropdown-arrow-y, 50%);
+    transform: translateY(-50%);
+    color: #9d9d9d;
+    right: 8px;
+    font-size: 20px;
+    line-height: 1;
+    display: inline-block;
+}
+
+.naviItem .hamburger_close {
+    display: none;
+}
+
+.naviItem.publishToPlace {
+    position: initial;
+    width: auto;
+    height: initial;
+    display: initial;
+    box-sizing: initial;
+}
+
+.naviItem.publishToPlace ul > li.item {
+    position: relative;
+}
+
+.naviItem.publishToPlace ul.navigation {
+    background: inherit;
+}
+
+.naviItem.publishToPlace ul.navigation {
+    z-index: 2;
+}
+
+/* Trên mobile thì sẽ expand full screen của menu level2 */
+@media screen and (min-width:0px) and (max-width: 768px) {
+    .naviItem.publishToPlace ul > li.item {
+        position: initial;
+    }
+}
+
+.naviItem ul li ul.children.fullExpand {
+    width: 100%;
+    position: fixed;
+    left: 0px;
+}
+
+.naviItem ul li ul.children.fullExpand li.child_column {
+    width: 50%;
+    float: left;
+}
+
+.naviItem ul li ul.children.fullExpand li.child_column .children.fullExpandChildrent {
+    display: initial !important;
+    position: initial;
+    box-shadow: initial;
+    border-top: initial;
+    background: initial;
+    padding: initial;
+    
+}
+
+/*
+.naviItem.SECTION_MOBILE_HEADER,
+.naviItem.SECTION_MOBILE_MEGAMENU,
+.naviItem.SECTION_MOBILE_GRID,
+.naviItem.SECTION_MOBILE_BANNER,
+.naviItem.SECTION_DESKTOP_MEGAMENU
+{
+    position: initial;
+}
+*/
+
+
+/********** active color ****************/
+/*
+.naviItem ul li.item a:active > span,
+.naviItem ul li.item a:active .inner .info span
+ {
+   color: #FF337E;
+}*/
+
+.naviItem.SECTION_MOBILE_HEADER ul.children,
+.naviItem.SECTION_MOBILE_MEGAMENU ul.children
+{
+    top: 34px;
+    bottom: initial;
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.10);
+}
+
+.naviItem.SECTION_DESKTOP_MEGAMENU ul.children {
+    top: 40px;
+    bottom: initial;
+    box-shadow: 0px 20px 40px 0px rgba(0, 0, 0, 0.10);
+    width: 320px;
+}
+
+
+.naviItem.SECTION_DESKTOP_MEGAMENU ul li ul.children.fullExpand li.child_column .children.fullExpandChildrent {
+    border: 0px;
+}
+
+/********** fix widthauto (Hug) ****************/
+/* nếu là menu dạng ngang thì setup khoảng cách chỗ Hug rộng ra một chút */
+.naviItem.STICKY_MOBILE_HEADER ul > li.item.widthauto,
+.naviItem.SECTION_MOBILE_HEADER ul > li.item.widthauto,
+.naviItem.SECTION_MOBILE_MEGAMENU ul > li.item.widthauto
+{
+    padding-left: 9px;
+    padding-right: 5px;    
+}
+
+/********** Auto hide/show *********************/
+.navi-anim {
+    transition: translate .10s ease, opacity .10s ease;
+    will-change: translate, opacity;
+    opacity: 1;
+    translate: 0 0;
+}
+.navi-anim.navi-hidden {
+    opacity: 0;
+    pointer-events: none;
+    translate: 0 16px;
+}
+
+@supports not (translate: 0 0) {
+    .navi-anim {
+        transition: transform .10s ease, opacity .10s ease;
+        will-change: transform, opacity;
+        transform: translate3d(0, 0, 0);
+    }
+    .navi-anim.navi-hidden {
+        transform: translate3d(0, 16px, 0);
+    }
+}
+
+/* dùng để đo load – không cần áp vào HTML */
+.isloaded_uigen_css { opacity: 0.00001; }
+
+/********* End of Common CSS *********/ 
+
+
+/********* Dropdown for desktop *********/
+/* Do ko có overlay nên phải làm dày các đổ bóng cho nó đẹp */
+@media screen and (min-width:769px) {
+    .naviItem.STICKY_TABBAR,
+    .naviItem.STICKY_FAB_SUPPORT
+    {
+        box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.15);
+    }
+
+    .naviItem.STICKY_TABBAR ul li ul.children,
+    .naviItem.STICKY_FAB_SUPPORT ul li ul.children
+    {
+        box-shadow: 0px -4px 20px 0px rgba(0, 0, 0, 0.15);
+    }
+}/* Variable *****************************/
+:root{
+    --cart-count-text: "●";
+    --cart-count-text-fix: "●";
+    --cart-count-number: "";
+}
+
+.naviItem ul li .cart_count {
+    visibility: hidden;
+}
+
+/** Badge for ITEM menu *********************************/
+
+/* Nếu ko có cart_count ***/
+.naviItem ul li.item_badge > .inner .icon::before, .naviItem ul li.item_badge > .inner .image::before {
+    content: var(--cart-count-text-fix);
+    color: red;
+    position: absolute;
+    font-size: 24px;
+    left: calc(100% - 28px);
+    top: -2px;
+    z-index: 1;
+    font-family: sans-serif;
+}
+
+.naviItem ul li.item_badge > .inner .icon::after, .naviItem ul li.item_badge > .inner .image::after,
+.naviItem ul li.child_badge > .inner .icon::after, .naviItem ul li.child_badge > .inner .image::after
+{
+    content: var(--cart-count-number);
+    visibility: hidden;
+    font-size: 0px;
+}
+
+/*
+    Chỗ này update chỉ dành riêng cho submenu của STICKY_TABBAR để ko bị lệch khi có badge do before/after có thể tham gia vào width của
+    .image nên nó sẽ gây width của .image bị rộng ra.
+*/
+.naviItem.STICKY_TABBAR ul li.child_badge > .inner .icon::before, .naviItem.STICKY_TABBAR ul li.child_badge > .inner .image::before,
+.naviItem.STICKY_TABBAR ul li.child_badge > .inner .icon::after, .naviItem.STICKY_TABBAR ul li.child_badge > .inner .image::after {
+    display: block;
+    width: auto;
+    height: auto;
+    pointer-events: none;
+}
+
+
+
+
+/* Nếu có cart_count ***/
+
+.naviItem ul li.item_badge.item_badge_withcount > .inner .image-box {
+    width: 100%;
+}
+
+.naviItem ul li.item_badge.item_badge_withcount > .inner .icon, .naviItem ul li.item_badge.item_badge_withcount > .inner .image {
+    position: relative;
+}
+
+.naviItem ul li.item_badge.item_badge_withcount > .inner .icon::before, .naviItem ul li.item_badge.item_badge_withcount > .inner .image::before {
+    font-size: 40px;
+    top: -11px;
+    left: initial;    
+    right: 3px;
+    line-height: 20px;
+}
+
+.naviItem ul li.item_badge.item_badge_withcount > .inner .icon::after, .naviItem ul li.item_badge.item_badge_withcount > .inner .image::after {
+    font-size: 11px;
+    z-index: 10;
+    position: absolute;
+    top: -7px;
+    right: 10px;
+    color: #fff;
+    line-height: 16px;
+    visibility: visible;
+    text-align: center;
+    width: 13px;
+}
+
+.naviItem ul li.item_badge.item_badge_withcount .cart_count {
+    position: absolute;
+    left: calc(100% - 26px);
+    top: 6px;
+    font-size: 10px;
+    z-index: 1000;
+    color: #fff;
+    text-align: center;
+    width: 20px;
+}
+
+.naviItem.STICKY_TABBAR ul li.item_badge.item_badge_withcount > .inner .icon::before, .naviItem.STICKY_TABBAR ul li.item_badge.item_badge_withcount > .inner .image::before {
+    left: 50%;    
+    right: initial;
+}
+
+.naviItem.STICKY_TABBAR ul li.item_badge.item_badge_withcount > .inner .icon::after, .naviItem.STICKY_TABBAR ul li.item_badge.item_badge_withcount > .inner .image::after {
+    left: calc(50% + 6px);
+}
+
+
+
+/** Badge for CHILD menu *********************************/
+
+/* Nếu ko có cart_count ***/
+.naviItem ul li.child_badge > .inner .icon::before, .naviItem ul li.child_badge > .inner .image::before {
+    content: var(--cart-count-text-fix);
+    font-family: sans-serif;
+    color: red;
+    position: absolute;
+    font-size: 24px;
+    left: 15px;
+    line-height: 10px;
+    top: -7px;
+    z-index: 1;
+}
+
+/* Nếu có cart_count ***/
+.naviItem ul li.child_badge.child_badge_withcount > .inner .image-box {
+    width: 100%;
+}
+
+
+.naviItem ul li.item ul li.child_badge {
+    position: relative;
+}
+.naviItem ul li.child_badge > .inner .icon, .naviItem ul li.child_badge > .inner .image,
+.naviItem ul li.child_badge.child_badge_withcount > .inner .icon, .naviItem ul li.child_badge.child_badge_withcount > .inner .image {
+    position: relative;
+}
+
+.naviItem ul li.child_badge.child_badge_withcount > .inner .icon::before, .naviItem ul li.child_badge.child_badge_withcount > .inner .image::before {
+    font-size: 40px;
+    top: -13px;
+    left: initial;    
+    right: -13px;
+    line-height: 20px;
+}
+
+.naviItem ul li.child_badge.child_badge_withcount > .inner .icon::after, .naviItem ul li.child_badge.child_badge_withcount > .inner .image::after {
+    font-size: 11px;
+    z-index: 10;
+    position: absolute;
+    top: -9px;
+    right: -6px;
+    color: #fff;
+    line-height: 16px;
+    visibility: visible;
+    text-align: center;
+    width: 13px;
+}
+
+.naviItem ul li.child_badge.child_badge_withcount .cart_count {
+    position: absolute;
+    left: 31px;
+    top: 6px;
+    font-size: 10px;
+    z-index: 1000;
+    color: #fff;
+    text-align: center;
+    width: 20px;
+}
+
+
+/** cart_count cho cả mọi trường hợp *********************************/
+.naviItem ul li.item_badge_withcount > .inner .icon::before, .naviItem ul li.item_badge_withcount > .inner .image::before,
+.naviItem ul li.child_badge_withcount > .inner .icon::before, .naviItem ul li.child_badge_withcount > .inner .image::before {
+    content: var(--cart-count-text);
+}
+
+/** Fix for Slide menu *****/
+.naviItem.CONTEXT_SLIDE ul li.item_badge.item_badge_withcount .cart_count {
+    left: 14px;
+    top: -2px;
+    right: initial;
+}
+
+.naviItem.CONTEXT_SLIDE ul li.child_badge.child_badge_withcount .cart_count {
+    left: 11px;
+    top: 0px;
+    right: initial;
+}
+
+.naviItem.CONTEXT_SLIDE ul li.item_badge.item_badge_withcount > .inner .icon::after, .naviItem.CONTEXT_SLIDE ul li.item_badge.item_badge_withcount > .inner .image::after {
+    left: 18px;
+    top: -4px;
+    right: initial;
+}
+
+
+.naviItem.CONTEXT_SLIDE ul li.child_badge.child_badge_withcount > .inner .icon::after, .naviItem.CONTEXT_SLIDE ul li.child_badge.child_badge_withcount > .inner .image::after {
+    left: 17px;
+    top: -9px;
+    right: initial;
+}
+
+/** Fix for FAB menu *****/
+
+.naviItem.STICKY_FAB_SUPPORT ul li.item_badge.item_badge_withcount .cart_count {
+    left: 26px;
+    top: 8px;
+}
+
+.naviItem.STICKY_FAB_SUPPORT ul li.child_badge.child_badge_withcount .cart_count {
+    left: 28px;
+    top: 2px;
+}
+
+.hide-before::before {
+  opacity: 0 !important;
+}.naviItem.CONTEXT_SLIDE ul > li.is-parent-top {
+    position:relative;
+}
+/* Arrow: top = tâm dòng .name (JS set --navi-slide-arrow-y), translateY(-50%) căn theo box pseudo.
+   line-height:1 + inline-block: tránh kế thừa line-height lớn từ li → box ::after cao → translateY(-50%) đẩy icon lệch tận lên trên */
+.naviItem.CONTEXT_SLIDE ul > li.is-parent-top::after,
+.naviItem.CONTEXT_SLIDE ul > li.is-parent-top ul li.is-parent::after {
+    content: "\ea54";
+    font-family: remixicon !important;
+    position: absolute;
+    top: var(--navi-slide-arrow-y, 50%);
+    transform: translateY(-50%);
+    color: #9d9d9d;
+    right: 10px;
+    font-size: 20px;
+    line-height: 1;
+    display: inline-block;
+}
+
+.naviItem.CONTEXT_SLIDE ul > li.is-parent-top ul li.is-parent::after {
+    right: 0px;
+}
+
+.naviItem.CONTEXT_SLIDE ul > li.is-parent-top.menu-expand::after,
+.naviItem.CONTEXT_SLIDE ul > li.is-parent-top  ul li.is-parent.menu-expand::after
+{
+    transform: translateY(-50%) rotate(90deg);
+}
+
+@media only screen and (min-width:769px){
+    .naviItem.CONTEXT_SLIDE.hamburger-desktop-sub-leftright ul > li.is-parent-top.menu-expand::after {
+        transform: translateY(-50%);
+    }
+
+    .naviItem.CONTEXT_SLIDE.hamburger-desktop-sub-contextmenu ul > li.is-parent-top.menu-expand::after {
+        transform: translateY(-50%);
+    }
+
+    /* Level 3 panel: flush against level 2, border-left as separator */
+    .naviItem.CONTEXT_SLIDE.hamburger-desktop-sub-contextmenu ul li.item > ul.children li ul.children {
+        border: 0px;
+        border-left: solid 1px rgba(128, 128, 128, 0.2);
+        border-radius: 4px;
+        box-shadow: 0px 20px 40px 0px rgba(0, 0, 0, 0.10);
+    }
+
+    /* Level 3 items: same padding as level 2 items */
+    .naviItem.CONTEXT_SLIDE.hamburger-desktop-sub-contextmenu ul li.item > ul.children li ul.children > li {
+        padding: 8px 16px;
+    }
+
+    /* Arrow on level 2 items: don't rotate when level 3 opens */
+    .naviItem.CONTEXT_SLIDE.hamburger-desktop-sub-contextmenu ul > li.is-parent-top ul li.is-parent.menu-expand::after {
+        transform: translateY(-50%);
+    }
+
+    /* Active state: level 1 item with open level 2 */
+    .naviItem.CONTEXT_SLIDE.hamburger-desktop-sub-contextmenu > ul > li.item.menu-expand,
+    .naviItem.CONTEXT_SLIDE.hamburger-desktop-sub-contextmenu > ul > li.item.menu-expand-level1 {
+        background: rgba(128, 128, 128, 0.1);
+    }
+
+    /* Active state: level 2 item with open level 3 */
+    .naviItem.CONTEXT_SLIDE.hamburger-desktop-sub-contextmenu ul > li.is-parent-top > ul.children li.child.menu-expand,
+    .naviItem.CONTEXT_SLIDE.hamburger-desktop-sub-contextmenu ul > li.is-parent-top > ul.children li.child.menu-expand-level2 {
+        background: rgba(128, 128, 128, 0.1);
+    }
+
+    .naviItem.CONTEXT_SLIDE.hamburger-desktop-sub-leftright.hamburger-desktop-fullfixed:not(.hamburger-desktop-sub-direction-4) ul li.item > ul.children[menulevel="2"] {
+        box-shadow: 0px -1px 8px 0px rgba(0, 0, 0, 0.1) !important;
+        border-left: 0px !important;
+    }
+
+    .naviItem.CONTEXT_SLIDE.hamburger-desktop-fullfixed .hamburger_close,
+    .naviItem.CONTEXT_SLIDE.hamburger-desktop-fullfixed i.close-icon {
+        display: none !important;
+    }
+
+    /* Desktop fullfixed sub-direction-4: giữ bóng cho level 2, 3 */
+    .naviItem.CONTEXT_SLIDE.hamburger-desktop-sub-leftright.hamburger-desktop-fullfixed.hamburger-desktop-sub-direction-4 ul li.item > ul.children[menulevel="2"],
+    .naviItem.CONTEXT_SLIDE.hamburger-desktop-sub-leftright.hamburger-desktop-fullfixed.hamburger-desktop-sub-direction-4 ul li.item > ul.children[menulevel="3"] {
+        box-shadow: inset 0px 0px 1px rgba(0, 0, 0, 0.4) !important;
+    }
+}
+
+
+/*** Fixed for hamburger ******/
+.naviItem.CONTEXT_SLIDE ul li.layout-automatic > .inner, .naviItem.CONTEXT_SLIDE ul li.left-right > .inner {
+    display: inline-flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 4px;
+    padding-top: 0px;
+    justify-content: flex-start;
+}
+
+.naviItem.CONTEXT_SLIDE {
+    width: 90%;
+    max-width: 360px;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    overflow-y: auto;
+    padding-bottom: 16px;
+}
+
+.naviItem.CONTEXT_SLIDE ul li.item {
+    width: 100%;
+    max-width: 360px;
+    text-align: initial;
+    height: initial;
+    padding: 8px 16px;
+}
+
+.naviItem.CONTEXT_SLIDE ul li.item ul li.child.layout-automatic .inner {
+    display: inline-flex;
+}
+
+.naviItem.CONTEXT_SLIDE ul li.item.kind-blank-space {
+    padding: 0px;
+}
+
+.naviItem.CONTEXT_SLIDE ul li.item > .inner {
+    gap: 8px;
+}
+
+.naviItem.CONTEXT_SLIDE ul li.item > .inner .icon, .naviItem.CONTEXT_SLIDE ul li.item > .inner .image {
+    padding-top: 0px;
+    display: contents;
+}
+
+.naviItem.CONTEXT_SLIDE ul li.item > ul.children, .naviItem.CONTEXT_SLIDE ul li.item > ul.children li ul.children {
+    position: initial;
+    width: 100%;
+    margin: initial;
+    margin-top: 8px;
+    max-height: initial;
+    padding: 0px;
+}
+
+.naviItem.CONTEXT_SLIDE ul.children {
+    border: solid 1px rgba(128, 128, 128, 0.2);
+    border-radius: 4px;
+    background: rgba(128, 128, 128, 0.2);
+    border-radius: 4px;
+}
+
+.naviItem.CONTEXT_SLIDE ul.children ul.children {
+    border: 0px;
+    border-radius: 0px;
+    border-top: solid 1px #f0f0f0;
+    border-bottom: solid 1px #f0f0f0;
+}
+
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] ul.children ul.children {
+    border-top: none;
+    border-bottom: none;
+}
+
+.naviItem.CONTEXT_SLIDE ul.children ul.children li.child {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.naviItem.CONTEXT_SLIDE ul li.item_badge > .inner .icon::before, .naviItem.CONTEXT_SLIDE ul li.item_badge > .inner .image::before {
+    left: 12px;
+    top: -8px;
+    right: initial;
+}
+
+.naviItem.CONTEXT_SLIDE ul li.item > ul.children li.child {
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.naviItem.CONTEXT_SLIDE ul li.item:hover, .naviItem.CONTEXT_SLIDE ul li.child:hover {
+    background: initial;
+}
+
+.naviItem.CONTEXT_SLIDE ul li.item ul li.child .icon {
+    display: contents;
+}
+
+.naviItem.CONTEXT_SLIDE ul > li.icon-image-only > .inner {
+    display: block;
+}
+
+.naviItem.CONTEXT_SLIDE ul > li.icon-image-only {
+    padding: 8px;
+}
+
+.naviItem.CONTEXT_SLIDE ul > li.kind-blank-space {
+    padding: 0px;
+}
+
+@media only screen and (min-width:769px){
+    .naviItem.CONTEXT_SLIDE > ul li.item:hover, .naviItem.CONTEXT_SLIDE > ul li.child:hover{
+        background: rgba(128, 128, 128, 0.03) radial-gradient(circle, transparent 0%, rgba(128, 128, 128, 0.03) 0%) center / 15000%;
+        /*text-decoration: underline;*/
+    }
+
+    .naviItem.CONTEXT_SLIDE > ul li.item.menu-expand:hover, .naviItem.CONTEXT_SLIDE > ul li.child.menu-expand:hover{
+        background: initial;
+    }
+
+    .naviItem.CONTEXT_SLIDE.hamburger-desktop-sub-leftright ul li.item > ul.children[menulevel="2"] {
+        top: 0px !important; 
+    }
+
+    /* Desktop sub-leftright / sub-topdown: level 2, 3 bằng level 1 (90% max 360px), tránh tràn, hiện arrow.
+       Dùng selector cụ thể hơn base → không cần !important */
+    .naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-desktop-sub-leftright ul li.item > ul.children,
+    .naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-desktop-sub-leftright ul li.item > ul.children li ul.children,
+    .naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-desktop-sub-topdown ul li.item > ul.children,
+    .naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-desktop-sub-topdown ul li.item > ul.children li ul.children {
+        width: 90%;
+        max-width: 360px;
+    }
+}
+
+.naviItem.CONTEXT_SLIDE ul li.item .name:hover, .naviItem.CONTEXT_SLIDE ul li.child .name:hover {
+    text-decoration: underline;
+}
+
+@media screen and (min-width:0px) and (max-width: 768px) { 
+    /* Mobile: không hiện underline khi hover và bấm vào gây cảm giác ko chuyên nghiệp */
+    .naviItem.CONTEXT_SLIDE ul li.item .name:hover, .naviItem.CONTEXT_SLIDE ul li.child .name:hover {
+        text-decoration: none;
+    }
+}
+
+.naviItem.CONTEXT_SLIDE ul li.kind-group-title > .inner .image, .naviItem ul li.kind-group-title > .inner .icon {
+    display: none !important;
+}
+
+.naviItem.CONTEXT_SLIDE ul li.kind-group-title > .inner {
+    /* display: block; */
+    width: 100%;
+    gap: 0px;
+}
+
+.naviItem.CONTEXT_SLIDE ul li.kind-group-title {
+    padding: 4px 16px 6px 16px;
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+
+.naviItem.CONTEXT_SLIDE ul li.kind-group-title > .inner .name {
+    font-size: 110%;
+}
+
+.naviItem.CONTEXT_SLIDE ul li.kind-group-title > .inner .info {
+    margin-left: 0px;
+    width: calc(100% - 12px);
+    display: contents;
+}
+
+.naviItem.CONTEXT_SLIDE ul li ul.children .overlay {
+    display: none !important;
+}
+
+.naviItem.CONTEXT_SLIDE ul > li.item > .inner .image-border {
+    width: initial;
+}
+
+.naviItem.CONTEXT_SLIDE ul .kind-big-image-text.top-down .image img, .naviItem.CONTEXT_SLIDE ul .kind-big-image-text.down-top .image img{
+    /* width: auto; /* Đồi từ 100% sang Auto để fix trên safari */
+    width: inherit;
+}
+
+.naviItem.CONTEXT_SLIDE ul > li.item > .inner .image-border .image-box {
+    width: 100%;
+}
+
+.naviItem.CONTEXT_SLIDE ul .kind-big-image-text.top-down, .naviItem.CONTEXT_SLIDE ul .kind-big-image-text.down-top {
+    padding: 8px 12px 4px 16px;
+}
+
+.naviItem.CONTEXT_SLIDE ul .kind-big-image-text .image img {
+    border-radius: 4px;
+    height: initial;
+    width: 100%;
+}
+
+.naviItem.CONTEXT_SLIDE ul .child.top-down .image, .naviItem.CONTEXT_SLIDE ul .child.down-top .image, .naviItem.CONTEXT_SLIDE ul .child.top-down .icon, .naviItem.CONTEXT_SLIDE  ul .child.down-top .icon {
+    width: 100%;
+    display: block;
+    height: initial;
+}
+
+.naviItem.CONTEXT_SLIDE ul .child.top-down .info, .naviItem.CONTEXT_SLIDE ul .child.down-top .info {
+    margin-left: initial;
+    width: initial;
+}
+
+.naviItem.CONTEXT_SLIDE ul li.item.kind-big-image-text .inner {
+    gap: 4px;
+}
+
+.naviItem.CONTEXT_SLIDE ul > li.item > .inner .description {
+    display: block;
+}
+
+.naviItem.CONTEXT_SLIDE li.item > .inner .name {
+    white-space: initial;
+}
+
+.naviItem.CONTEXT_SLIDE .hamburger_close {
+    display: block !important;
+    position: absolute;
+    z-index: 1000000;
+    right: 0px;
+    top: 0px;
+    width: 56px;
+    height: 56px;
+    text-align: center;
+    border-radius: 50%;
+    margin: 0px;
+    padding: 0px;
+    transition: background-color 0.15s ease-out;
+}
+
+.naviItem.CONTEXT_SLIDE .hamburger_close:hover {
+    cursor: pointer;
+    background: rgba(128, 128, 128, 0.05);
+}
+
+.naviItem.CONTEXT_SLIDE .hamburger_close:active {
+    background: rgba(128, 128, 128, 0.12);
+    transition: none;
+}
+
+.naviItem.CONTEXT_SLIDE i.close-icon{
+    font-size: 24px;    
+    position: absolute;
+    top: 12px;
+    line-height: 32px;
+    right: 14px;
+    display: block;
+    z-index: 1001;
+}
+
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] .hamburger_back {
+    display: none !important;
+    position: fixed;
+    z-index: 1000000;
+    left: 0px;
+    top: 0px;
+    width: 56px;
+    height: 56px;
+    text-align: center;
+    border-radius: 50%;
+    margin: 0px;
+    padding: 0px;
+    transition: background-color 0.15s ease-out;
+}
+
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] .hamburger_back:hover {
+    cursor: pointer;
+    background: rgba(128, 128, 128, 0.05);
+}
+
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] .hamburger_back:active {
+    background: rgba(128, 128, 128, 0.12);
+    transition: none;
+}
+
+/* Nếu là dạng slide-horizontal arrow luôn xoay sang phải, ko xoay khi expand */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] ul > li.is-parent-top.menu-expand::after, .naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] ul > li.is-parent-top ul li.is-parent.menu-expand::after {
+    transform: translateY(-50%) rotate(0deg) !important;
+}
+
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] i.back-icon{
+    font-size: 24px;    
+    position: fixed;
+    top: 12px;
+    line-height: 32px;
+    left: 14px;
+    display: none;
+    z-index: 1001;
+}
+
+/* Header cố định cho slide-horizontal (back icon + title) */
+/* width khớp với panel (90% max 360px) để translateX(100%) = cùng khoảng cách với panel → slide vào/ra đồng bộ */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] .slide-horizontal-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 90%;
+    max-width: 360px;
+    height: 56px;
+    display: none; /* chỉ hiện khi có title */
+    align-items: center;
+    padding-left: 56px; /* 56px width nút back, title sát ngay sau icon */
+    padding-right: 16px;
+    pointer-events: none; /* không chặn click vào menu bên dưới/back icon */
+    z-index: 950;
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(128,128,128,0.3);
+}
+/* right-left: panel neo bên phải → header cũng neo bên phải */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-right-left .slide-horizontal-header {
+    left: auto;
+    right: 0;
+}
+/* fullscreen / top-down / down-top: panel 100% → header cũng 100% */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-fullscreen .slide-horizontal-header,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-top-down .slide-horizontal-header,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-down-top .slide-horizontal-header {
+    width: 100%;
+    max-width: none;
+}
+
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] .slide-horizontal-header-title {
+    font-size: 16px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: auto;
+}
+
+/* Wrapper level 3: header + panel trượt cùng nhau, z-index 900 đè overlay (899) */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] .slide-horizontal-level3-wrapper {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 90%;
+    max-width: 360px;
+    height: 100%;
+    z-index: 900;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-right-left .slide-horizontal-level3-wrapper {
+    left: auto;
+    right: 0;
+}
+/* Header riêng cho level 3: cùng kích thước với panel level 3, trượt vào/ra cùng nhau như 1 khối */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] .slide-horizontal-header-level3 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 90%;        /* khớp với width level 3 panel (90%) */
+    max-width: 360px;  /* khớp max-width level 3 panel */
+    height: 56px;
+    display: none; /* JS điều khiển khi level 3 mở/đóng */
+    align-items: center;
+    padding-left: 56px;
+    padding-right: 16px;
+    z-index: 1100000; /* Cao hơn .hamburger_back (1000000) để tự nhiên đè lên back icon khi animation */
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(128,128,128,0.3);
+    pointer-events: none; /* Chỉ back clone mới clickable */
+}
+/* right-left: panel neo bên phải → header level 3 cũng neo bên phải */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-right-left .slide-horizontal-header-level3 {
+    left: auto;
+    right: 0;
+}
+/* top-down/down-top/fullscreen: panel full width → header level 3 cũng full width */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-top-down .slide-horizontal-header-level3,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-down-top .slide-horizontal-header-level3,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-fullscreen .slide-horizontal-header-level3 {
+    width: 100%;
+    max-width: none;
+}
+
+/* Clone back icon trong header: chạy cùng animation với title, ẩn khi xong để hiện icon thật */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] .slide-horizontal-back-clone {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+/* Level 3: clone làm nút back (header level 2 bị ẩn). Override display:none của .hamburger_back */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] .slide-horizontal-header-level3 .slide-horizontal-back-clone.slide-horizontal-back-clone-active {
+    display: flex !important;
+    pointer-events: auto;
+    cursor: pointer;
+}
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] .slide-horizontal-back-clone .slide-horizontal-back-clone-icon {
+    font-size: 24px;
+    line-height: 32px;
+    display: block !important;
+}
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].navi-back-visible .hamburger_back {
+    display: block !important;
+}
+
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].navi-back-visible i.back-icon{
+    display: block !important;
+}
+
+/* Khi đang ở level 2, level 3 (có back-visible) thì ẩn icon close */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].navi-back-visible .hamburger_close,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].navi-back-visible i.close-icon {
+    display: none !important;
+}
+
+/* Khi mở level 2: ẩn icon close (opacity/visibility/transform, không dùng display:none để transition mượt) */
+
+/* Khi mở level 2: ẩn icon close (opacity/visibility/transform, không dùng display:none để transition mượt) */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].slide-open-animating .hamburger_close,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].slide-open-animating i.close-icon {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translateX(100%) !important;
+    transition: none !important;
+}
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-right-left.slide-open-animating .hamburger_close,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-right-left.slide-open-animating i.close-icon {
+    transform: translateX(-100%) !important;
+}
+/* Khi đóng level 2 đang animate: ẩn icon close để panel trượt phủ qua, không bị icon nổi trên */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].slide-close-animating .hamburger_close,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].slide-close-animating i.close-icon {
+    display: none !important;
+}
+
+@media screen and (min-width:0px) and (max-width: 768px) {
+    .naviItem.CONTEXT_SLIDE ul > li.is-parent {
+        position:relative;
+    }
+}
+
+
+.naviItem.CONTEXT_SLIDE.hamburger-right-left {
+    left: initial;
+    right: 0px;
+}
+
+@media screen and (min-width:0px) and (max-width: 768px) {
+    .naviItem.CONTEXT_SLIDE.hamburger-top-down {
+        width: 100%;
+        height: 92%;
+    }
+
+    .naviItem.CONTEXT_SLIDE.hamburger-down-top {
+        width: 100%;
+        height: 92%;
+        top: initial;
+        bottom: 0px;
+    }
+
+    .naviItem.CONTEXT_SLIDE.hamburger-fullscreen {
+        width: 100%;
+        height: 100%;
+    }
+    .naviItem.CONTEXT_SLIDE.hamburger-full-popup {
+        width: 92%;
+        height: 96%;
+        left: 4%;
+        top: 2%;
+        border-radius: 8px;
+    }
+}   
+
+
+
+.naviItem.CONTEXT_SLIDE li.navi-expand > ul.children {
+    display: block !important; 
+    height: initial !important; 
+    overflow: auto !important;
+}
+
+.naviItem.CONTEXT_SLIDE li.navi-expand::after {
+    content: "" !important;
+}
+
+/* ╔═══ SLIDE HORIZONTAL ══════════════════════════════════════════════════════════════════════════════════════════════════════════════╗ */
+
+/* --- Fix cho việc không hiện highlight khi click vào menu khi ở trong lớp con */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] * {
+    -webkit-tap-highlight-color: transparent;
+}
+/* --- Nhưng vấn đề là mất đi highlight khi click vào level 1 menu ════════════ */
+
+
+/* Test cho việc mở ra thêm 1 lớp menu trên slide menu ****/
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] ul li.item > ul.children, .naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] ul li.item > ul.children li ul.children{
+    width: 90%;
+    position: fixed;
+    left: 0px;
+    top: 0px !important;
+    height: 100% !important;
+    margin: 0px;
+    border-radius: 0px;
+    z-index: 900;
+    padding-top: 60px;
+    overflow-y: auto;
+}
+
+/* top-down/down-top/fullscreen: level 1 full width → level 2, 3 cũng full (100%) cho đồng nhất */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-top-down ul li.item > ul.children,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-top-down ul li.item > ul.children li ul.children,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-down-top ul li.item > ul.children,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-down-top ul li.item > ul.children li ul.children,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-fullscreen ul li.item > ul.children,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-fullscreen ul li.item > ul.children li ul.children {
+    width: 100%;
+}
+
+/* full-popup: level 1 là popup giữa màn → level 2, 3 khớp kích thước. !important chỉ dùng khi override rule base */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-full-popup ul li.item > ul.children {
+    left: 4%; /* khớp left với level 1 (4%) → right edge = 96% = level 1 */
+    top: 2% !important; /* override base top: 0 !important */
+    width: 92%;
+    max-width: none;
+    height: 96%;
+    border-radius: 8px;
+    padding-left: 0;
+    padding-right: 0;
+}
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-full-popup ul li.item > ul.children li ul.children {
+    left: 4%;
+    top: 2% !important;
+    width: 92%;
+    max-width: none;
+    height: 96%;
+    border-radius: 8px;
+    padding-left: 0;
+    padding-right: 0;
+}
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-full-popup ul.children[menulevel="3"] {
+    left: 4% !important; /* override ul.children[menulevel="3"] { left: 0 !important } */
+    padding: 60px 0px 0px;
+}
+
+/* full-popup: header align với panel (left:4%; width:92%) để không lệch */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-full-popup .slide-horizontal-header,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-full-popup .slide-horizontal-header-level3 {
+    top: 2%;
+    left: 4%;
+    width: 92%;
+    max-width: none;
+}
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-full-popup .hamburger_back {
+    top: 2%;
+    left: 4%; /* 16px gap tính từ left edge của popup (popup left = 4%) */
+}
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-full-popup i.back-icon {
+    top: calc(2% + 12px);
+    left: calc(4% + 14px);
+}
+
+/* full-fixed: sidebar luôn visible → header/back-icon cùng top:0, left:0 với sidebar.
+   Width được inject bởi updateLayoutBySlideFixed (JS) để khớp slideWidth.
+   Thêm 16px gap để header/back-icon không sát lề trái. */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-full-fixed .slide-horizontal-header,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-full-fixed .slide-horizontal-header-level3 {
+    top: 0;
+    left: 0;
+    padding-left: 56px; /* 56px = chiều rộng back button */
+}
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-full-fixed .hamburger_back {
+    top: 0;
+    left: 0px;
+}
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-full-fixed i.back-icon {
+    top: 12px;
+    left: 14px;
+}
+/* down-top: .naviItem bắt đầu từ 8% (bottom:0; height:92%) → clip-path:border-box che header ở top:0.
+   Đẩy header/back về top:8% để nằm trong bounds, đồng thời tăng padding-top cho panel. */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-down-top .slide-horizontal-header,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-down-top .slide-horizontal-header-level3 {
+    top: 8%;
+}
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-down-top .hamburger_back {
+    top: 8%;
+}
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-down-top i.back-icon {
+    top: calc(8% + 12px);
+}
+/* down-top: panel trượt từ dưới lên → level 2, 3 cần padding-top lớn hơn để tránh sát đỉnh */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-down-top ul li.item > ul.children,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-down-top ul li.item > ul.children li ul.children {
+    padding-top: 96px !important;
+}
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-down-top ul.children[menulevel="3"] {
+    padding: 96px 16px 0px !important;
+}
+
+/* right-left: level 1 neo bên phải → level 2, 3 cũng neo bên phải, tránh trượt quá về trái */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-right-left ul li.item > ul.children,
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-right-left ul li.item > ul.children li ul.children {
+    left: auto !important;
+    right: 0 !important;
+}
+
+/*
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] ul li.item > ul.children::before, .naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] ul li.item > ul.children li ul.children::before {
+    content: "\ea60";
+    font-family: 'remixicon';
+    position: fixed;
+    top: 12px;
+    font-size: 24px;
+    left: 4px;
+    width: 36px;
+    padding: 8px;
+    background: none;
+    height: 36px;
+}*/
+
+/* Overlay phủ level 2 khi mở/đóng level 3: styles được set inline bởi JS với top=scrollTop để không trôi khi scroll.
+   CSS chỉ giữ lại fallback không có !important để inline styles có thể override. */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] ul.children[menulevel="2"] > .slide-horizontal-close-overlay.slide-horizontal-overlay-level2-only {
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Để fix việc menu level 2 khi slide sang thì ko bị đè lên level 1 */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] {
+    clip-path: border-box;
+}
+
+/* Khi đã mở submenu (level 2/3) và có nút back,
+   khoá scroll container, chỉ cho panel con scroll (CHỈ áp dụng mobile) */
+@media screen and (max-width: 768px) {
+    .naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].navi-back-visible {
+        overflow: hidden;
+    }
+}
+
+/* Khi đang mở level 3: ul level 2 bị khoá scroll, chỉ level 3 scroll */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] ul.children[menulevel="2"].navi-level2-scroll-locked {
+    overflow: hidden !important;
+}
+
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] ul.children[menulevel="3"] {
+    padding: 60px 16px 0px !important;
+    left: 0px !important;
+}
+
+/* right-left: level 3 neo phải, width giới hạn. !important để override ul.children[menulevel="3"] { left: 0 !important } */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-right-left ul.children[menulevel="3"] {
+    left: auto !important;
+    right: 0 !important;
+    width: 90%;
+    max-width: 90%;
+}
+
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] ul > li.is-parent-top ul li.is-parent::after {
+    right: 10px !important;
+}
+
+/* Force transition for level 2 specifically - JavaScript controls animation */
+/* will-change không có transform: nếu có transform thì level 2 tạo containing block cho level 3,
+   khiến overflow của level 2 clip animation của level 3 (bị bụp ra từ cạnh panel thay vì slide từ ngoài vào) */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] ul.children[menulevel="2"] {
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.2s ease-out;
+    will-change: opacity;
+    /* menu-expand bị gỡ TRƯỚC khi animate (để CSS transform chạy được), nên border/shadow phải override ở đây
+       thay vì dựa vào li.item.menu-expand > ul.children rule (chỉ active khi menu-expand còn trên li) */
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Level 3 fallback */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] ul.children[menulevel="3"] {
+    will-change: transform, opacity;
+}
+
+/* Desktop fullfixed sub-direction-4: override box-shadow cho level 2, 3 */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-desktop-fullfixed.hamburger-desktop-sub-direction-4 ul.children[menulevel="2"],
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-desktop-fullfixed.hamburger-desktop-sub-direction-4 ul.children[menulevel="3"] {
+    box-shadow: inset 0px 0px 1px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Fallback for CSS-only animation */
+/* Level 2: KHÔNG dùng transform — transform khác none sẽ biến level 2 thành containing block cho level 3,
+   khiến position:fixed của level 3 bị clip bởi overflow của level 2 → animation level 3 bị lệch/lơ lửng */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] li.item.menu-expand > ul.children[menulevel="2"] {
+    opacity: 1 !important;
+    border: 0px;
+}
+/* Level 3: vẫn giữ transform để fallback CSS-only hiển thị đúng */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] li.item.menu-expand > ul.children[menulevel="3"] {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    border: 0px;
+}
+
+.naviItem.CONTEXT_SLIDE [ui="slide-horizontal"] ul.children {
+    border: 0px;
+}
+
+/* Level 3 panel: border cạnh để tạo đường phân cách với level 2.
+   Border nằm trong border-box của element → không bị clip bởi clip-path:border-box của menu parent.
+   (box-shadow regular bị clip; inset shadow tạo hiệu ứng lõm không đẹp). */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] ul.children[menulevel="3"],
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] li.item.menu-expand > ul.children[menulevel="3"] {
+    border-right: 1px solid rgba(0, 0, 0, 0.08) !important; /* cạnh phải cho left-right menus */
+}
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-right-left ul.children[menulevel="3"],
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-right-left li.item.menu-expand > ul.children[menulevel="3"] {
+    border-right: none !important;
+    border-left: 1px solid rgba(0, 0, 0, 0.08) !important; /* cạnh trái cho right-left menus */
+}
+
+/* Desktop fullfixed sub-direction-4: bỏ border, áp dụng shadow giống level 1 */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-desktop-fullfixed.hamburger-desktop-sub-direction-4 ul.children[menulevel="3"],
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-desktop-fullfixed.hamburger-desktop-sub-direction-4 li.item.menu-expand > ul.children[menulevel="3"] {
+    border-right: none !important;
+    border-left: none !important;
+}
+
+/* Desktop fullfixed sub-topdown (direction empty/1): restore shadow cho level 2, 3; bỏ border-right/left thừa ở level 3.
+   sub-topdown = class mặc định khi hamburgerSubDirection != 2 và != 3.
+   Cần !important để thắng rule box-shadow:none (line ~758) và border-right (line ~801) cũng dùng !important. */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-desktop-fullfixed.hamburger-desktop-sub-topdown ul.children[menulevel="2"],
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-desktop-fullfixed.hamburger-desktop-sub-topdown ul.children[menulevel="3"] {
+    box-shadow: inset 0px 0px 1px rgba(0, 0, 0, 0.4) !important;
+}
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-desktop-fullfixed.hamburger-desktop-sub-topdown ul.children[menulevel="3"],
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-desktop-fullfixed.hamburger-desktop-sub-topdown li.item.menu-expand > ul.children[menulevel="3"] {
+    border-right: none !important;
+    border-left: none !important;
+}
+
+/* Fake level3 header: cùng border với panel để line kéo dài từ đầu xuống cuối */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"] .slide-horizontal-header-level3 {
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-right-left .slide-horizontal-header-level3 {
+    border-right: none !important;
+    border-left: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+/* Fake level3 header: bỏ border cho fullfixed sub-topdown — panel full width không cần đường phân cách */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].hamburger-desktop-fullfixed.hamburger-desktop-sub-topdown .slide-horizontal-header-level3 {
+    border-right: none !important;
+    border-left: none !important;
+}
+
+/* Level 3 đang mở: ẩn real back button (fake level3 header back clone đảm nhận click qua event delegation).
+   Tránh trường hợp right-left menu có 2 nút back ở 2 vị trí khác nhau (real ở left:0, fake clone ở cạnh panel). */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].navi-level3-open .hamburger_back {
+    display: none !important;
+}
+/* Ẩn i.back-icon thật (là sibling của hamburger_back), KHÔNG ẩn i.back-icon bên trong fake level3 header */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].navi-level3-open > i.back-icon {
+    display: none !important;
+}
+/* Đảm bảo i.back-icon trong fake level3 header luôn hiển thị khi level 3 mở */
+.naviItem.CONTEXT_SLIDE[ui="slide-horizontal"].navi-level3-open .slide-horizontal-header-level3 i.back-icon {
+    display: block !important;
+}
+
+/* ╚═══ SLIDE HORIZONTAL ══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝ *//****** DESKTOP MEGAMENU STYLES **************************************/
+/* Arrow level 1: top = tâm .name (JS --navi-mega-arrow-y); line-height:1 tránh box ::after cao → translateY(-50%) kéo icon lệch lên */
+.naviItem.SECTION_DESKTOP_MEGAMENU ul > li.is-parent-top::after {
+    content: "\ea54";
+    font-family: remixicon !important;
+    position: absolute;
+    top: calc(var(--navi-mega-arrow-y, 50%) + 1px);
+    color: #9d9d9d;
+    right: 8px;
+    font-size: 20px;
+    line-height: 1;
+    display: inline-block;
+    transform: translateY(-50%) rotate(90deg);
+}
+
+.naviItem.SECTION_DESKTOP_MEGAMENU ul > li.item.is-parent-top {
+    padding-left: 16px;
+    padding-right: 32px;
+}
+
+.naviItem.SECTION_DESKTOP_MEGAMENU ul > li.item {
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+
+/****** MOBILE MEGAMENU STYLES **************************************/
+.naviItem.SECTION_MOBILE_MEGAMENU ul > li.is-parent-top::after {
+    content: "\ea54";
+    font-family: remixicon !important;
+    position: absolute;
+    top: calc(var(--navi-mega-arrow-y, 50%) + 2px);
+    color: #9d9d9d;
+    right: 4px;
+    font-size: 20px;
+    line-height: 1;
+    display: inline-block;
+    transform: translateY(-50%) rotate(90deg);
+}
+
+.naviItem.SECTION_MOBILE_MEGAMENU ul > li.item.is-parent-top {
+    position: relative;
+}
+
+.naviItem.SECTION_MOBILE_MEGAMENU ul > li.item.is-parent-top {
+    padding-left: 12px;
+    padding-right: 24px;
+}
+
+.naviItem.SECTION_MOBILE_MEGAMENU ul > li.item {
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.naviItem.SECTION_MOBILE_MEGAMENU ul > li.item.is-parent-top.left-right .icon::before 
+{
+    left: 10px;
+}
+
+.naviItem.SECTION_MOBILE_MEGAMENU ul > li.item.is-parent-top.left-right .icon::after
+{
+    left: 19px;
+    right: initial;
+}
+
+.naviItem.SECTION_MOBILE_MEGAMENU ul > li.item.is-parent-top.left-right .image::before {
+    /*left: 10px;*/
+    left: 13px;
+    top: 12px;
+}
+
+.naviItem.SECTION_MOBILE_MEGAMENU ul > li.item.is-parent-top.left-right.item_badge_withcount .image::before {
+    left: 10px;
+    top: -11px;
+}
+
+.naviItem.SECTION_MOBILE_MEGAMENU ul > li.item.is-parent-top.left-right .image::after {
+    left: 19px;
+    right: initial;
+}
+
+.naviItem.SECTION_MOBILE_MEGAMENU ul li.item ul.children[menulevel="3"] {
+    /*padding-top: 16px;*/
+}
+
+.naviItem.SECTION_MOBILE_HEADER .scroll-mobile ul.children[menulevel="2"],
+.naviItem.SECTION_MOBILE_MEGAMENU .scroll-mobile ul.children[menulevel="2"]
+{
+  position: fixed;
+  top: 0px;
+  overflow-x: hidden !important;
+}
+
+
+.naviItem.SECTION_MOBILE_MEGAMENU li.item.widthauto ul.children[menulevel="2"] {
+    width: 100%;
+    position: fixed;
+    left: 0px;
+    top: auto;
+}
+
+
+
+.naviItem.SECTION_MOBILE_GRID .name {
+  letter-spacing: initial;
+  line-height: initial;
+  white-space: initial !important;
+  display: block;
+  margin-top: 6px;
+}
+
+.naviItem.SECTION_MOBILE_GRID li.item .inner {
+  justify-content: flex-start;
+}
+
+.naviItem.SECTION_MOBILE_GRID ul.navigation {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 20px;
+  z-index: 0;
+}
+
+.naviItem.SECTION_MOBILE_GRID ul li.item {
+  height: initial;
+}
+
+.naviItem.SECTION_MOBILE_GRID {
+  padding-bottom: 12px;
+}
+
+.naviItem.SECTION_MOBILE_GRID {
+    display: grid;
+}
+
+/* Width của li do JS DeviceModeResize.updateGridMenuStyles set theo platform */
+
+.naviItem.SECTION_MOBILE_GRID .scroll-mobile {
+    padding-bottom: 12px;
+    /* Đảm bảo .scroll-mobile không rộng hơn naviItem, để overflow-x: auto clamp đúng */
+    max-width: 100%;
+}
+
+/* Khi item có widthlayout=auto, giới hạn width để không overflow vượt ul.navigation
+   (flex min-width: auto mặc định cho phép item to hơn container nếu content dài) */
+.naviItem.SECTION_MOBILE_GRID ul.navigation li.widthauto {
+    max-width: 100%;
+    min-width: 0;
+}
+
+.navinam_app:has(.publishToPlace.SECTION_MOBILE_GRID) {
+  height: max-content;
+}.naviItem.STICKY_FAB_SUPPORT ul li ul.children {
+  bottom: 0px;
+}
+
+
+@media screen and (min-width:0px) and (max-width: 768px) {
+  .naviItem.STICKY_FAB_SUPPORT.mobile-right-center ul li ul.children,
+  .naviItem.STICKY_FAB_SUPPORT.mobile-left-center ul li ul.children
+  {
+    bottom: auto;
+  }
+}
+
+/* Không có khái niệm các vị trí khác nhau trên desktop đối với FAB - chỉ có một loại thôi: góc phải dưới */
+/*
+@media only screen and (min-width: 769px) {
+  .naviItem.STICKY_FAB_SUPPORT.desktop-right-top ul li ul.children,
+  .naviItem.STICKY_FAB_SUPPORT.desktop-left-top ul li ul.children,
+  .naviItem.STICKY_FAB_SUPPORT.desktop-left-full-top ul li ul.children,
+  .naviItem.STICKY_FAB_SUPPORT.desktop-left-full-center ul li ul.children,
+  .naviItem.STICKY_FAB_SUPPORT.desktop-right-full-top ul li ul.children,
+  .naviItem.STICKY_FAB_SUPPORT.desktop-right-full-center ul li ul.children
+  {
+    bottom: auto;
+  }
+}*/
+
+/* Fix cho những loại bar của FAB cũ, khi mở dropdown ko bị đẩy lên trên */
+.naviItem.STICKY_FAB_SUPPORT.naviman_layout1 ul li ul.children {
+  bottom: auto;
+}/* Chỗ này sửa không biết đúng không. Phải test trước khi apply rộng rãi ****/
+@media screen and (min-width:0px) and (max-width: 768px) {
+    /*.naviItem ul > li.is-parent {
+        position:static;
+    }*/
+
+    .naviItem ul li ul.children li ul.children {
+        width: calc(100vw - 48px);
+    }
+
+}
+
